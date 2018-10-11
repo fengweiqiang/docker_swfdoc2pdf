@@ -46,9 +46,11 @@ def call_swfextract(swf_file, task_id)
 
   result = %x{swfextract #{_file}}
 
-  if result.include?('JPEGs:')
+  if result.include?('JPEGs:') || result.include?('PNGs:')
     line = result.split("\n")
     ids = line[2].split('ID(s)').last.strip.split(", ")
+
+    img_type_params = result.include?('JPEGs:') ? '-j' : '-p'
 
     html = ids.map{|id| %{<div class="pageBreak"><img src="#{id}.jpg"/></div>}}.join
 
@@ -57,7 +59,7 @@ def call_swfextract(swf_file, task_id)
     end
 
     ids.each do |id|
-      cmd = "swfextract -j #{id} -o #{_task_dir + "/#{id}"}.jpg #{_file}"
+      cmd = "swfextract #{img_type_params} #{id} -o #{_task_dir + "/#{id}"}.jpg #{_file}"
       %x{#{cmd}}
     end
     return "/#{task_id}/output.html"
@@ -70,12 +72,19 @@ while session = server.accept
   request = session.gets
   puts request
 
-  swf_file = request.split(' ')[1]
+  url = request.split(' ')[1]
 
-  puts swf_file
-
-  task_id = gen_random_task_id
-  result = call_swfextract(swf_file, task_id)
+  if url.start_with?('/down?url=')
+    file_url = url.split('/down?url=').last
+    swf_file = [gen_random_task_id, '.swf'].join
+    %x{curl #{file_url} > /var/tmp/#{swf_file}}
+    result = swf_file
+  else
+    swf_file = url
+    puts swf_file
+    task_id = gen_random_task_id
+    result = call_swfextract(swf_file, task_id)
+  end
 
   session.print "HTTP/1.1 200\r\n" # 1
   session.print "Content-Type: text/html\r\n" # 2

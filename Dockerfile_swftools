@@ -1,7 +1,7 @@
 FROM liubin/swftools
 
 RUN apt-get update && \
-    apt-get install -y ruby rubygems
+    apt-get install -y ruby rubygems curl
 
 COPY ./swf2img_server.rb /var/www/swf2img_server.rb
 
