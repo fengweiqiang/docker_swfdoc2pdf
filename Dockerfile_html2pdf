@@ -1,0 +1,10 @@
+FROM pink33n/html-to-pdf
+
+RUN apt-get update && \
+    apt-get install -y ruby rubygems
+
+COPY ./html2pdf_server.rb /var/www/html2pdf_server.rb
+
+WORKDIR /var/www/
+
+ENTRYPOINT ["ruby", "/var/www/html2pdf_server.rb"]

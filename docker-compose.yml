@@ -1,0 +1,31 @@
+version: '3'
+services:
+  swftools:
+    build:
+      context: .
+      dockerfile: Dockerfile_swftools
+    restart: always
+    volumes:
+      - ./tmp:/var/tmp/
+    ports: 
+      - "4010:4010"
+  html2pdf:
+    build:
+      context: .
+      dockerfile: Dockerfile_html2pdf
+    restart: always
+    privileged: true
+    volumes:
+      - ./tmp:/var/tmp/
+    ports: 
+      - "4012:4012"
+  swfdoc-nginx:
+    image: nginx:1.12.2
+    restart: always
+    volumes:
+      - ./tmp:/usr/share/nginx/html/
+    ports:
+      - "4011:80"
+    environment:
+      - NGINX_HOST=swfdoc-nginx
+      - NGINX_PORT=80
