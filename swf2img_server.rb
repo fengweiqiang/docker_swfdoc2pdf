@@ -53,9 +53,13 @@ def call_swfextract(swf_file, task_id)
     img_type_params = result.include?('JPEGs:') ? '-j' : '-p'
 
     html = ids.map{|id| %{<div class="pageBreak"><img src="#{id}.jpg"/></div>}}.join
-
+    jpgs = ids.map{|id| "#{id}.jpg"}.join(',')
     File.open(_task_dir + "/output.html", "a+") do |f|
       f.puts @html_template.gsub('$img$', html)
+    end
+
+    File.open(_task_dir + "/jpgs.txt", "a+") do |f|
+      f.puts jpgs
     end
 
     ids.each do |id|

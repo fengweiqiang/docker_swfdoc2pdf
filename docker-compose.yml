@@ -9,10 +9,10 @@ services:
       - ./tmp:/var/tmp/
     ports: 
       - "4010:4010"
-  html2pdf:
+  prawn:
     build:
       context: .
-      dockerfile: Dockerfile_html2pdf
+      dockerfile: Dockerfile_prawn
     restart: always
     privileged: true
     volumes:

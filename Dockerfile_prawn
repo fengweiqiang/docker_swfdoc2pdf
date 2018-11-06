@@ -1,0 +1,10 @@
+FROM ruby:2.4
+
+WORKDIR /var/www/
+COPY ./Gemfile /var/www/Gemfile
+
+RUN bundle install
+
+COPY ./prawn_server.rb /var/www/prawn_server.rb
+
+ENTRYPOINT ["ruby", "/var/www/prawn_server.rb"]
