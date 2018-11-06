@@ -34,7 +34,7 @@ while session = server.accept
 
   puts file_path
 
-  result = call_html2pdf(file_path.split('/')[1])
+  result = call_prawn(file_path.split('/')[1])
 
   session.print "HTTP/1.1 200\r\n" # 1
   session.print "Content-Type: text/html\r\n" # 2
