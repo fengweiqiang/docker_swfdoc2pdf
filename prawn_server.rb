@@ -16,10 +16,10 @@ def call_prawn(task_id)
   pdf_path = WORK_DIR + "/#{task_id}/output.pdf"
   
   jpgs = IO.read(WORK_DIR + "/#{task_id}/jpgs.txt")
-  ids = jpgs.split(',')
+  ids = jpgs.gsub("\n","").split(',')
   Prawn::Document.generate(pdf_path, :margin=>0, :page_size=>'A4') do
     ids.each do |num|
-      image  WORK_DIR + "/#{task_id}/#{num}.jpg", :width=>208.mm
+      image  WORK_DIR + "/#{task_id}/#{num}", :width=>208.mm
       start_new_page(:size => 'A4', :layout => :portrait) if ids.last!=num
     end
   end
